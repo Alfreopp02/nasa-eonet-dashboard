@@ -21,7 +21,7 @@ def load_data():
     df = pd.read_sql_query(query, conn)
     conn.close()
     
-    # NOVITÀ: Convertiamo la colonna data in formato datetime di Pandas
+    # Converto la colonna data_osservazione in formato datetime per facilitare i filtri
     df['data_osservazione'] = pd.to_datetime(df['data_osservazione']).dt.date
     return df
 
@@ -35,11 +35,11 @@ if df.empty:
 else:
     st.sidebar.header("🔍 Filtra i Dati")
     
-    # 1. Filtro Categoria
+    #  Filtro Categoria
     categorie_disponibili = ["Tutte"] + list(df['categoria'].unique())
     categoria_scelta = st.sidebar.selectbox("Scegli la tipologia di evento:", categorie_disponibili)
     
-    # 2. Filtro Data (NOVITÀ)
+    #  Filtro Data 
     min_date = df['data_osservazione'].min()
     max_date = df['data_osservazione'].max()
     
@@ -51,25 +51,25 @@ else:
         max_value=max_date
     )
     
-    # Applichiamo i filtri
+    # Filtraggio dei dati in base ai filtri selezionati
     df_filtrato = df.copy()
     
     if categoria_scelta != "Tutte":
         df_filtrato = df_filtrato[df_filtrato['categoria'] == categoria_scelta]
         
-    # Controlliamo che l'utente abbia selezionato sia inizio che fine
+    # Filtraggio per range di date
     if len(date_range) == 2:
         start_date, end_date = date_range
         df_filtrato = df_filtrato[(df_filtrato['data_osservazione'] >= start_date) & 
                                   (df_filtrato['data_osservazione'] <= end_date)]
 
-    # Metriche
+    # Riepilogo dei dati filtrati
     st.markdown("### Riepilogo")
     col1, col2 = st.columns(2)
     col1.metric("Eventi Filtrati", len(df_filtrato))
     col2.metric("Categorie Attive", len(df_filtrato['categoria'].unique()))
 
-    # Layout Mappa e Grafico
+    # Visualizzazione della mappa e del grafico a barre
     col_map, col_chart = st.columns((2, 1))
 
     with col_map:

@@ -2,10 +2,8 @@ import sqlite3
 import pandas as pd
 
 def esegui_query_analitica():
-    # Ci connettiamo al database appena popolato
     conn = sqlite3.connect('eonet_data.db')
     
-    # Scriviamo la query SQL analitica (JOIN + Funzione Aggregata)
     query = """
         SELECT 
             e.categoria, 
@@ -16,7 +14,7 @@ def esegui_query_analitica():
         ORDER BY numero_osservazioni DESC;
     """
     
-    # Usiamo Pandas per leggere i risultati direttamente in una tabella ordinata (DataFrame)
+    # dataframe
     print("Esecuzione della query analitica in corso...\n")
     df = pd.read_sql_query(query, conn)
     

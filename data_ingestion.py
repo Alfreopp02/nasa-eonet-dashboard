@@ -2,11 +2,10 @@ import requests
 import sqlite3
 
 def setup_database():
-    # Crea un file database chiamato 'eonet_data.db' nella tua cartella
     conn = sqlite3.connect('eonet_data.db')
     cursor = conn.cursor()
     
-    # 1. Tabella Eventi
+    #  Tabella Eventi
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS eventi (
             id TEXT PRIMARY KEY,
@@ -15,7 +14,7 @@ def setup_database():
         )
     ''')
     
-    # 2. Tabella Posizioni (con FOREIGN KEY per le JOIN)
+    #  Tabella Posizioni
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS posizioni (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,16 +47,16 @@ def fetch_and_save_events():
         for evento in eventi:
             evento_id = evento['id']
             titolo = evento['title']
-            # Estraiamo la prima categoria disponibile
+            # Gestione della categoria: se non esiste, assegno'Sconosciuta'
             categoria = evento['categories'][0]['title'] if evento['categories'] else 'Sconosciuta'
             
-            # Inseriamo l'evento (IGNORE salta l'inserimento se l'ID esiste già per evitare duplicati)
+            # Inserisco l'evento nella tabella eventi
             cursor.execute('''
                 INSERT OR IGNORE INTO eventi (id, titolo, categoria)
                 VALUES (?, ?, ?)
             ''', (evento_id, titolo, categoria))
             
-            # Inseriamo le posizioni associate all'evento
+            # Inserisco le posizioni associate all'evento nella tabella posizioni
             for geo in evento.get('geometry', []):
                 data_oss = geo.get('date')
                 # EONET restituisce le coordinate come [Longitudine, Latitudine]
