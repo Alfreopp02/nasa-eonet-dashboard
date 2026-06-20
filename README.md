@@ -8,17 +8,17 @@ Questo progetto è stato realizzato come test pratico per valutare le competenze
 Per questo progetto è stata scelta l'API **EONET (The Earth Observatory Natural Event Tracker)**. 
 La scelta è ricaduta su questa risorsa per tre ragioni fondamentali legate ai requisiti del test:
 - **Filtraggio Geografico:** Ogni evento EONET è dotato di coordinate standard (latitudine e longitudine), rendendo immediata e precisa la mappatura visiva.
-- **Filtraggio Temporale:** L'API fornisce timestamp esatti per ogni singola osservazione.
+- **Filtraggio Temporale e di Stato:** L'API fornisce timestamp esatti per ogni singola osservazione e permette di estrarre sia gli eventi attualmente in corso che lo storico di quelli passati, offrendo una panoramica completa.
 - **Categorizzazione Intrinseca:** Gli eventi sono già normalizzati in categorie ben distinte (es. *Wildfires*, *Severe Storms*, *Volcanoes*), permettendo analisi raggruppate e query aggregate immediate.
 
 ### b. Architettura della Soluzione
 Il sistema è sviluppato in **Python** ed è strutturato in due moduli logici principali per mantenere una chiara separazione tra backend (dati) e frontend (presentazione):
-1. **Data Ingestion (ETL):** Lo script `data_ingestion.py` interroga l'endpoint REST della NASA, estrae il JSON, lo processa e gestisce la persistenza caricandolo in un database locale SQLite.
+1. **Data Ingestion (ETL):** Lo script `data_ingestion.py` interroga l'endpoint REST della NASA, estrae il JSON e lo processa,elabora lo stato dell'evento (Attivo/Passato)  e gestisce la persistenza caricandolo in un database locale SQLite.
 2. **Data Presentation:** L'interfaccia grafica è stata sviluppata utilizzando **Streamlit**, che si connette al database, estrae i dati tramite Pandas e li renderizza attraverso componenti web interattivi (mappe dinamiche, metriche e grafici a barre).
 
 ### c. Database e Query Principali
 Il database relazionale (`eonet_data.db` via SQLite) è stato progettato con uno schema logico a due tabelle per rispettare le regole di normalizzazione ed evitare ridondanze, separando l'anagrafica dell'evento dalle sue osservazioni spazio-temporali:
-- **`eventi`** (`id` PK, `titolo`, `categoria`)
+- **`eventi`** (`id` PK, `titolo`, `categoria`,`stato`)
 - **`posizioni`** (`id` PK, `evento_id` FK, `data_osservazione`, `latitudine`, `longitudine`)
 
 **Query Analitica Principale:**
@@ -34,6 +34,7 @@ Per alimentare il grafico di distribuzione nella dashboard, è stata utilizzata 
 
 ### d. Insight Ricavati dall'Analisi dei Dati
 Navigando la dashboard e filtrando i dati, emergono pattern interessanti:
+- **Analisi Storica vs Attuale:** Grazie al filtro sullo stato dell'evento, è possibile confrontare i disastri in corso con lo storico di quelli già conclusi.
 - **Concentrazione Geografica:** È visibile una chiara polarizzazione di specifici eventi (es. gli incendi, *Wildfires*) in determinate fasce continentali.
 - **Frequenza Relativa:** La dashboard mette in luce immediatamente quali siano i disastri naturali attualmente più attivi e monitorati a livello globale rispetto ad altri eventi più rari.
 

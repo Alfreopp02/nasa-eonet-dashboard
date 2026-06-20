@@ -11,7 +11,8 @@ def load_data():
         SELECT 
             e.id, 
             e.titolo, 
-            e.categoria, 
+            e.categoria,
+            e.stato, 
             p.data_osservazione, 
             p.latitudine as latitude, 
             p.longitudine as longitude
@@ -35,6 +36,12 @@ if df.empty:
 else:
     st.sidebar.header("🔍 Filtra i Dati")
     
+    # Filtro Stato
+    stato_scelto = st.sidebar.radio(
+        "Stato dell'evento:",
+        ("Solo Attivi", "Solo Passati", "Tutti gli eventi")
+    )
+    
     #  Filtro Categoria
     categorie_disponibili = ["Tutte"] + list(df['categoria'].unique())
     categoria_scelta = st.sidebar.selectbox("Scegli la tipologia di evento:", categorie_disponibili)
@@ -53,6 +60,11 @@ else:
     
     # Filtraggio dei dati in base ai filtri selezionati
     df_filtrato = df.copy()
+    
+    if stato_scelto == "Solo Attivi":
+        df_filtrato = df_filtrato[df_filtrato['stato'] == 'Attivo']
+    elif stato_scelto == "Solo Passati":
+        df_filtrato = df_filtrato[df_filtrato['stato'] == 'Passato']
     
     if categoria_scelta != "Tutte":
         df_filtrato = df_filtrato[df_filtrato['categoria'] == categoria_scelta]
