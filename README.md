@@ -1,5 +1,7 @@
 # 🌍 NASA EONET Dashboard - Test Pratico Developer
 
+> 📌 **Nota:** Il testo originale e i requisiti della consegna sono consultabili nel file [ASSIGNMENT.md](ASSIGNMENT.md)
+
 Questo progetto è stato realizzato come test pratico per valutare le competenze nello sviluppo di una pipeline di dati completa,  dal recupero tramite API pubbliche della NASA alla persistenza su database relazionale, fino alla visualizzazione tramite una dashboard interattiva.
 
 ## 1. Relazione Tecnica
